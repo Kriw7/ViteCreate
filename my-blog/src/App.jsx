@@ -22,9 +22,17 @@ function App() {
     },
   ]);
 
+  function deleteCard(id) {
+    setPost(post.filter((p) => p.id !== id));
+  }
+
+  function addCard() {
+    alert("X");
+  }
+
   return (
     <>
-      <Header />
+      <Header addCard={addCard} />
       <p>Test</p>
       <main>
         {post.map((post) => (
@@ -34,6 +42,7 @@ function App() {
               title={post.title}
               content={post.content}
               date={post.date}
+              deleteCard={deleteCard}
             />
             <LikeButton />
           </React.Fragment>
