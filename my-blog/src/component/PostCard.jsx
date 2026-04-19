@@ -7,7 +7,10 @@ function PostCard(props) {
       <h3>{props.title}</h3>
       <p>{props.content}</p>
       <p>{props.date}</p>
-      <button onClick={props.deleteCard}> Delete </button>
+      <button onClick={props.onLike}>
+        👍 {props.likeCount > 0 ? props.likeCount : 0}
+      </button>
+      <button onClick={props.onDelete}> Delete </button>
     </div>
   );
 }
