@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import "./App.css";
 import Header from "./component/Header";
@@ -7,35 +7,44 @@ import PostCard from "./component/PostCard";
 import PostForm from "./component/PostForm";
 
 function App() {
-  const [post, setPost] = useState([
-    {
-      id: 1,
-      title: "First Article",
-      content: "This is the content of the first article.",
-      date: "2026-04-06",
-      likeCount: 9,
-    },
-    {
-      id: 2,
-      title: "Second Article",
-      content: "This is the content of the second article.",
-      date: "2026-04-07",
-      likeCount: 6,
-    },
-  ]);
+  // 从 localStorage 恢复数据，没有就用默认值
+  const [post, setPost] = useState(() => {
+    const savedPosts = localStorage.getItem("my-blog-posts");
+    return savedPosts ? JSON.parse(savedPosts) : [
+      {
+        id: 1,
+        title: "First Article",
+        content: "This is the content of the first article.",
+        date: "2026-04-06",
+        likeCount: 9,
+      },
+      {
+        id: 2,
+        title: "Second Article",
+        content: "This is the content of the second article.",
+        date: "2026-04-07",
+        likeCount: 6,
+      },
+    ];
+  });
 
   const [showAddModel, setShowAddModel] = useState(false);
 
+  // useEffect：每当 post 变化，自动存到 localStorage
+  useEffect(() => {
+    localStorage.setItem("my-blog-posts", JSON.stringify(post));
+  }, [post]); // ← 盯住 post，post 变了就执行
+
   function handleClickLikeButton(postId) {
     setPost((prevPost) =>
-      prevPost.map((post) =>
-        post.id === postId ? { ...post, likeCount: post.likeCount + 1 } : post,
+      prevPost.map((p) =>
+        p.id === postId ? { ...p, likeCount: p.likeCount + 1 } : p,
       ),
     );
   }
 
   function handleDeleteCard(postId) {
-    setPost((prevPost) => prevPost.filter((post) => post.id !== postId));
+    setPost((prevPost) => prevPost.filter((p) => p.id !== postId));
   }
 
   function handleAddPost(newPost) {
