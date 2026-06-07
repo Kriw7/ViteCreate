@@ -167,7 +167,7 @@
 
   &::before,
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: -4.5px;
     border: 5px solid transparent;
@@ -181,4 +181,83 @@
     right: 0;
     border-right-color: var(--border);
   }
+}
+
+/* The explore part */
+.explore-card {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border-left: 4px solid #7c3aed;
+}
+
+.explore-card p {
+  margin: 4px 0;
+}
+
+.explore-card:hover {
+  background: #f0ebff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+  transition: all 0.2s ease;
+}
+
+.explore-card:first-child {
+  margin-top: 100px;
+}
+
+.explore-card:active {
+  transform: scale(0.98);
+}
+
+button:focus-visible {
+  outline: 3px solid #7c3aed;
+  outline-offset: 2px;
+}
+
+.status-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px;
+  color: #6b7280;
+}
+/* The explore part - Loading spinner */
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #e5e7eb;
+  border-top: 3px solid #7c3aed;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* The explore part - Error Box */
+.error-box {
+  background: #f2f2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 16px;
+  columns: #991b1b;
+}
+
+.error-box button {
+  margin-top: 8px;
+  padding: 6px 16px;
+  border: 1px solid #fca5a5;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+}
+
+.error-box button:hover {
+  background: #fee2e2;
 }

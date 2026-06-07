@@ -5,35 +5,68 @@ import Header from "./component/Header";
 import Footer from "./component/Footer";
 import PostCard from "./component/PostCard";
 import PostForm from "./component/PostForm";
+import Admonition from "./Admonition";
 
 function App() {
   // 从 localStorage 恢复数据，没有就用默认值
   const [post, setPost] = useState(() => {
     const savedPosts = localStorage.getItem("my-blog-posts");
-    return savedPosts ? JSON.parse(savedPosts) : [
-      {
-        id: 1,
-        title: "First Article",
-        content: "This is the content of the first article.",
-        date: "2026-04-06",
-        likeCount: 9,
-      },
-      {
-        id: 2,
-        title: "Second Article",
-        content: "This is the content of the second article.",
-        date: "2026-04-07",
-        likeCount: 6,
-      },
-    ];
+    return savedPosts
+      ? JSON.parse(savedPosts)
+      : [
+          {
+            id: 1,
+            title: "First Article",
+            content: "This is the content of the first article.",
+            date: "2026-04-06",
+            likeCount: 9,
+          },
+          {
+            id: 2,
+            title: "Second Article",
+            content: "This is the content of the second article.",
+            date: "2026-04-07",
+            likeCount: 6,
+          },
+        ];
   });
+
+  const [admonition, setAdmonition] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [showAddModel, setShowAddModel] = useState(false);
 
-  // useEffect：每当 post 变化，自动存到 localStorage
   useEffect(() => {
     localStorage.setItem("my-blog-posts", JSON.stringify(post));
-  }, [post]); // ← 盯住 post，post 变了就执行
+
+    if (post.length === 0) {
+      document.title = "My Blog - Write your first article!";
+    } else {
+      document.title = `My Blog (${post.length} articles)`;
+    }
+  }, [post]);
+
+  async function loadPosts() {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await fetch(
+        "https://jsonplaceholder.typicode.com/posts",
+      );
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      setAdmonition(data.slice(0, 10));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    loadPosts();
+  }, []);
 
   function handleClickLikeButton(postId) {
     setPost((prevPost) =>
@@ -83,20 +116,46 @@ function App() {
             </div>
           </div>
         )}
-        {post.map((post) => (
-          <React.Fragment key={post.id}>
+        {post.map((item) => (
+          <React.Fragment key={item.id}>
             <PostCard
-              key={post.id}
-              title={post.title}
-              content={post.content}
-              date={post.date}
-              likeCount={post.likeCount}
-              onLike={() => handleClickLikeButton(post.id)}
+              key={item.id}
+              title={item.title}
+              content={item.content}
+              date={item.date}
+              likeCount={item.likeCount}
+              onLike={() => handleClickLikeButton(item.id)}
               // Future improve: Might have performance issue
-              onDelete={() => handleDeleteCard(post.id)}
+              onDelete={() => handleDeleteCard(item.id)}
             />
           </React.Fragment>
         ))}
+        <h2>🌐 Explore Posts</h2>
+        {loading && (
+          <div className="status-loading">
+            <div className="spinner"></div>
+            Loading explore posts...
+          </div>
+        )}
+
+        {!loading && error && (
+          <div className="error-box">
+            <p>❌ Failed to load: {error}</p>
+            <button onClick={() => loadPosts()}>Retry</button>
+          </div>
+        )}
+
+        {!loading &&
+          !error &&
+          admonition.map((item) => (
+            <React.Fragment key={item.id}>
+              <Admonition
+                key={item.id}
+                title={item.title}
+                content={item.body}
+              />
+            </React.Fragment>
+          ))}
       </main>
       <Footer />
     </>
