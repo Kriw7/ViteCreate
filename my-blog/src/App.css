@@ -261,3 +261,16 @@ button:focus-visible {
 .error-box button:hover {
   background: #fee2e2;
 }
+
+/* Header part */
+.header_link {
+  text-decoration: none;
+  color: var(--text-h);
+}
+
+/* 修复 MD 编辑器内部 code 被全局样式污染的问题 */
+.w-md-editor-text-pre > code {
+  display: block !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+}

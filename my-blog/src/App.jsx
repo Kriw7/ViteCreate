@@ -6,6 +6,9 @@ import Footer from "./component/Footer";
 import PostCard from "./component/PostCard";
 import PostForm from "./component/PostForm";
 import Admonition from "./Admonition";
+import { Route, Routes } from "react-router";
+import PostDetail from "./component/PostDetail";
+import About from "./component/About";
 
 function App() {
   // 从 localStorage 恢复数据，没有就用默认值
@@ -35,7 +38,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [showAddModel, setShowAddModel] = useState(false);
+  const [showAddModel,   setShowAddModel] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("my-blog-posts", JSON.stringify(post));
@@ -88,74 +91,85 @@ function App() {
     <>
       <Header />
       <main>
-        <button onClick={() => setShowAddModel(true)}>Add new article</button>
-        {showAddModel && (
-          <div
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: "gray",
-            }}
-          >
-            <div
-              style={{
-                background: "white",
-                margin: "50px auto",
-                width: "300px",
-                padding: "20px",
-              }}
-            >
-              <PostForm
-                onAddPost={handleAddPost}
-                onShowAddModel={setShowAddModel}
-              />
-              <button onClick={() => setShowAddModel(false)}>Cancel</button>
-            </div>
-          </div>
-        )}
-        {post.map((item) => (
-          <React.Fragment key={item.id}>
-            <PostCard
-              key={item.id}
-              title={item.title}
-              content={item.content}
-              date={item.date}
-              likeCount={item.likeCount}
-              onLike={() => handleClickLikeButton(item.id)}
-              // Future improve: Might have performance issue
-              onDelete={() => handleDeleteCard(item.id)}
-            />
-          </React.Fragment>
-        ))}
-        <h2>🌐 Explore Posts</h2>
-        {loading && (
-          <div className="status-loading">
-            <div className="spinner"></div>
-            Loading explore posts...
-          </div>
-        )}
+        <Routes>
+          <Route path='/' element = {
+            <>
+            <button onClick={() => setShowAddModel(true)}>Add new article</button>
+            {showAddModel && (
+              <div
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: "gray",
+                }}
+              >
+                <div
+                  style={{
+                    background: "white",
+                    margin: "50px auto",
+                    width: "300px",
+                    padding: "20px",
+                  }}
+                >
+                  <PostForm
+                    onAddPost={handleAddPost}
+                    onShowAddModel={setShowAddModel}
+                  />
+                  <button onClick={() => setShowAddModel(false)}>Cancel</button>
+                </div>
+              </div>
+            )}
+            {post.map((item) => (
+              <React.Fragment key={item.id}>
+                <PostCard
+                  id={item.id}
+                  key={item.id}
+                  title={item.title}
+                  content={item.content}
+                  date={item.date}
+                  likeCount={item.likeCount}
+                  onLike={() => handleClickLikeButton(item.id)}
+                  // Future improve: Might have performance issue
+                  onDelete={() => handleDeleteCard(item.id)}
+                />
+              </React.Fragment>
+            ))}
+            <h2>🌐 Explore Posts</h2>
+            {loading && (
+              <div className="status-loading">
+                <div className="spinner"></div>
+                Loading explore posts...
+              </div>
+            )}
 
-        {!loading && error && (
-          <div className="error-box">
-            <p>❌ Failed to load: {error}</p>
-            <button onClick={() => loadPosts()}>Retry</button>
-          </div>
-        )}
+            {!loading && error && (
+              <div className="error-box">
+                <p>❌ Failed to load: {error}</p>
+                <button onClick={() => loadPosts()}>Retry</button>
+              </div>
+            )}
 
-        {!loading &&
-          !error &&
-          admonition.map((item) => (
-            <React.Fragment key={item.id}>
-              <Admonition
-                key={item.id}
-                title={item.title}
-                content={item.body}
-              />
-            </React.Fragment>
-          ))}
+            {!loading &&
+              !error &&
+              admonition.map((item) => (
+                <React.Fragment key={item.id}>
+                  <Admonition
+                    key={item.id}
+                    title={item.title}
+                    content={item.body}
+                  />
+                </React.Fragment>
+              ))} 
+            </>
+          }/>
+
+          <Route path='/posts/:id' element={<PostDetail posts={post} />}/>
+
+          <Route path='/about' element={<About/>}/>
+        </Routes>
       </main>
       <Footer />
     </>

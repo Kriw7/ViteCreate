@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
+import MDEditor from "@uiw/react-md-editor";
 
 function PostForm({ onAddPost, onShowAddModel }) {
   const [title, setTitle] = useState(() => {
@@ -61,12 +62,7 @@ function PostForm({ onAddPost, onShowAddModel }) {
           onChange={(e) => setTitle(e.target.value)}
           required
         />
-        <textarea
-          placeholder="The content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          required
-        />
+        <MDEditor value={content}  onChange={setContent}/>
         <button type="submit">Add new article</button>
         <button type="button" onClick={() => handleClearAll()}>Clear the content</button>
       </form>
